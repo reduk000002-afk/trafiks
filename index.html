@@ -3,264 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Регистрация - Арбитраж трафика</title>
+    <title>Bear Capital — Инвестиции</title>
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #fff;
         }
+
         .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 520px;
+            max-width: 480px;
             width: 100%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 40px 32px;
+            background: #111111;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
         }
+
+        /* ===== ЛОГОТИП ===== */
         .logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
+
+        .logo .bear {
+            font-size: 42px;
+            display: block;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
         .logo h1 {
-            color: #fff;
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #ffffff;
         }
-        .logo span {
-            color: #6c63ff;
+
+        .logo h1 span {
+            color: #d4a84b;
         }
+
+        .logo .tagline {
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        /* ===== ПРОГРЕСС ===== */
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 36px;
+        }
+
+        .progress .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .progress .dot.active {
+            background: #d4a84b;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        .progress .dot.done {
+            background: rgba(212, 168, 75, 0.3);
+        }
+
+        /* ===== ШАГИ ===== */
         .step {
             display: none;
-            animation: fadeIn 0.4s ease;
+            animation: fadeIn 0.5s ease;
         }
+
         .step.active {
             display: block;
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(12px);
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
+
         .step-title {
-            color: #fff;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            letter-spacing: -0.3px;
         }
-        .step-title small {
-            display: block;
-            font-weight: 400;
-            font-size: 14px;
+
+        .step-sub {
+            font-size: 13px;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 28px;
+            letter-spacing: 0.2px;
+        }
+
+        .step-sub strong {
             color: rgba(255, 255, 255, 0.5);
-            margin-top: 5px;
+            font-weight: 400;
         }
+
+        /* ===== ВАРИАНТЫ ВЫБОРА ===== */
         .options {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
         }
+
         .option-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            color: #fff;
-            padding: 14px 32px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 500;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 400;
             cursor: pointer;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 120px;
-            text-align: center;
+            text-align: left;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+        .option-btn .emoji {
+            font-size: 18px;
+            opacity: 0.5;
+        }
+
         .option-btn:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
         }
+
         .option-btn.selected {
-            background: #6c63ff;
-            border-color: #6c63ff;
-            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+            background: rgba(212, 168, 75, 0.08);
+            border-color: #d4a84b;
+            color: #ffffff;
         }
+
+        .option-btn.selected .emoji {
+            opacity: 1;
+        }
+
+        .option-btn .hint {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.2);
+            font-weight: 300;
+            margin-left: auto;
+        }
+
+        /* ===== ПОЛЯ ВВОДА ===== */
         .input-group {
             margin-bottom: 20px;
         }
+
         .input-group label {
             display: block;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 8px;
+            letter-spacing: 0.3px;
         }
+
         .input-group input,
         .input-group select {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
             color: #fff;
-            font-size: 16px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
             transition: all 0.3s ease;
             outline: none;
         }
+
         .input-group input:focus,
         .input-group select:focus {
-            border-color: #6c63ff;
-            background: rgba(255, 255, 255, 0.08);
+            border-color: #d4a84b;
+            background: rgba(255, 255, 255, 0.06);
         }
+
         .input-group input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.2);
         }
+
         .input-group select option {
-            background: #1a1f3a;
+            background: #111111;
             color: #fff;
         }
+
+        /* ===== ЧЕКБОКС ===== */
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin: 16px 0;
+            margin: 16px 0 20px;
             cursor: pointer;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            font-weight: 300;
         }
+
         .checkbox-group input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #6c63ff;
+            width: 18px;
+            height: 18px;
+            accent-color: #d4a84b;
             cursor: pointer;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            appearance: none;
+            -webkit-appearance: none;
+            position: relative;
+            flex-shrink: 0;
         }
+
+        .checkbox-group input[type="checkbox"]:checked {
+            background: #d4a84b;
+            border-color: #d4a84b;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0a0a0a;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== КНОПКИ ===== */
         .btn-primary {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+            background: #d4a84b;
             border: none;
-            border-radius: 16px;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
+            border-radius: 12px;
+            color: #0a0a0a;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
         }
+
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 35px rgba(108, 99, 255, 0.4);
+            background: #e0b85c;
+            transform: translateY(-1px);
         }
+
         .btn-primary:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
             transform: none !important;
         }
+
         .btn-secondary {
             width: 100%;
             padding: 14px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 16px;
-            font-weight: 600;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 8px;
         }
+
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.6);
         }
+
+        /* ===== ПРЕВЬЮ ===== */
+        .preview-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .preview-box .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+
+        .preview-box .row .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-weight: 300;
+        }
+
+        .preview-box .row .value {
+            color: #fff;
+            font-weight: 400;
+        }
+
+        .preview-box .row .value.gold {
+            color: #d4a84b;
+        }
+
+        .preview-box .divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.04);
+            margin: 8px 0;
+        }
+
+        /* ===== SUCCESS ===== */
         .success {
             display: none;
             text-align: center;
             padding: 20px 0;
         }
+
         .success.active {
             display: block;
             animation: fadeIn 0.6s ease;
         }
+
         .success .icon {
-            font-size: 64px;
-            margin-bottom: 15px;
+            font-size: 52px;
+            margin-bottom: 16px;
         }
+
         .success h2 {
-            color: #fff;
-            font-size: 26px;
-            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
         }
+
         .success p {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            line-height: 1.7;
+            font-weight: 300;
+            max-width: 340px;
+            margin: 0 auto 24px;
         }
+
         .success .telegram-btn {
             display: inline-block;
-            padding: 14px 40px;
-            background: #0088cc;
-            border-radius: 16px;
-            color: #fff;
+            padding: 14px 36px;
+            background: #d4a84b;
+            border-radius: 12px;
+            color: #0a0a0a;
             font-weight: 600;
             text-decoration: none;
+            font-size: 14px;
             transition: all 0.3s ease;
+            letter-spacing: 0.5px;
         }
+
         .success .telegram-btn:hover {
-            background: #006699;
-            transform: scale(1.05);
+            background: #e0b85c;
+            transform: scale(1.02);
         }
-        .progress {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 30px;
+
+        /* ===== ФУТЕР (маленький текст) ===== */
+        .footer-note {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.12);
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
-        .progress .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-        }
-        .progress .dot.active {
-            background: #6c63ff;
-            box-shadow: 0 0 20px rgba(108, 99, 255, 0.5);
-        }
-        .progress .dot.done {
-            background: rgba(108, 99, 255, 0.3);
-        }
-        .hidden {
-            display: none !important;
-        }
+
+        /* ===== АДАПТИВ ===== */
         @media (max-width: 480px) {
             .container {
-                padding: 24px;
-            }
-            .option-btn {
-                padding: 12px 20px;
-                font-size: 14px;
-                min-width: 80px;
+                padding: 28px 20px;
             }
             .logo h1 {
-                font-size: 22px;
+                font-size: 18px;
+                letter-spacing: 3px;
+            }
+            .step-title {
+                font-size: 18px;
+            }
+            .option-btn {
+                padding: 14px 16px;
+                font-size: 14px;
             }
         }
     </style>
@@ -268,10 +443,14 @@
 <body>
 
     <div class="container" id="app">
+        <!-- ===== LOGO ===== -->
         <div class="logo">
-            <h1>🚀 <span>Lead</span>Hub</h1>
+            <span class="bear">🐻</span>
+            <h1>Bear <span>Capital</span></h1>
+            <div class="tagline">Investment Group</div>
         </div>
 
+        <!-- ===== PROGRESS ===== -->
         <div class="progress" id="progress">
             <span class="dot active" data-step="1"></span>
             <span class="dot" data-step="2"></span>
@@ -279,106 +458,149 @@
             <span class="dot" data-step="4"></span>
         </div>
 
-        <!-- ШАГ 1 -->
+        <!-- ============================================================ -->
+        <!-- STEP 1: COUNTRY -->
+        <!-- ============================================================ -->
         <div class="step active" data-step="1">
-            <div class="step-title">
-                🌍 Ваша страна проживания
-                <small>Выберите один вариант</small>
-            </div>
+            <div class="step-title">Ваша страна</div>
+            <div class="step-sub">Это поможет нам подобрать <strong>инвестиционного консультанта</strong> в вашем регионе</div>
+
             <div class="options" id="countryOptions">
-                <button class="option-btn" data-value="Россия">🇷🇺 Россия</button>
-                <button class="option-btn" data-value="Другая">🌍 Другая страна</button>
+                <button class="option-btn" data-value="Россия">
+                    <span class="emoji">🇷🇺</span> Россия
+                </button>
+                <button class="option-btn" data-value="Другая">
+                    <span class="emoji">🌍</span> Другая страна
+                </button>
             </div>
         </div>
 
-        <!-- ШАГ 2 -->
+        <!-- ============================================================ -->
+        <!-- STEP 2: AGE -->
+        <!-- ============================================================ -->
         <div class="step" data-step="2">
-            <div class="step-title">
-                🎂 Ваш возраст
-                <small>Выберите вашу возрастную группу</small>
-            </div>
+            <div class="step-title">Ваш возраст</div>
+            <div class="step-sub">Это позволит нам предложить <strong>индивидуальную стратегию</strong> под ваши цели</div>
+
             <div class="options" id="ageOptions">
-                <button class="option-btn" data-value="до 24">🧑 Молодой (до 24)</button>
-                <button class="option-btn" data-value="24-55">👨 Опытный (24-55)</button>
-                <button class="option-btn" data-value="55+">👴 Зрелый (55+)</button>
+                <button class="option-btn" data-value="до 24">
+                    <span class="emoji">🌱</span> До 24 лет
+                    <span class="hint">Старт</span>
+                </button>
+                <button class="option-btn" data-value="24-55">
+                    <span class="emoji">📈</span> 24–55 лет
+                    <span class="hint">Рост</span>
+                </button>
+                <button class="option-btn" data-value="55+">
+                    <span class="emoji">🏛️</span> 55+ лет
+                    <span class="hint">Стабильность</span>
+                </button>
             </div>
         </div>
 
-        <!-- ШАГ 3 -->
+        <!-- ============================================================ -->
+        <!-- STEP 3: CONTACT -->
+        <!-- ============================================================ -->
         <div class="step" data-step="3">
-            <div class="step-title">
-                📱 Ваш контакт
-                <small>Как с вами связаться?</small>
-            </div>
+            <div class="step-title">Контактные данные</div>
+            <div class="step-sub">Наш специалист свяжется с вами <strong>в ближайшее время</strong></div>
+
             <div class="input-group">
-                <label>Ник в Telegram или номер телефона</label>
+                <label>Telegram или номер телефона</label>
                 <input type="text" id="contactInput" placeholder="@username или +7 999 999-99-99">
             </div>
+
             <div class="checkbox-group" id="noTelegramCheckbox">
                 <input type="checkbox" id="noTelegram">
-                <label for="noTelegram">❌ Я не пользуюсь Telegram</label>
+                <label for="noTelegram">У меня нет Telegram</label>
             </div>
+
             <div id="alternativeContacts" class="hidden">
                 <div class="input-group" style="margin-top: 16px;">
-                    <label>Ваш контакт (почта или номер)</label>
-                    <input type="text" id="altContactInput" placeholder="example@mail.com или +7 999 999-99-99">
+                    <label>Контакт для связи</label>
+                    <input type="text" id="altContactInput" placeholder="example@mail.com или номер">
                 </div>
                 <div class="input-group">
-                    <label>Выберите мессенджер</label>
+                    <label>Предпочитаемый мессенджер</label>
                     <select id="messengerSelect">
                         <option value="WhatsApp">WhatsApp</option>
                         <option value="Viber">Viber</option>
-                        <option value="Telegram">Telegram (другой аккаунт)</option>
+                        <option value="Telegram">Telegram</option>
                         <option value="Email">Email</option>
                         <option value="Другое">Другое</option>
                     </select>
                 </div>
             </div>
-            <button class="btn-primary" id="step3Next">Далее →</button>
+
+            <button class="btn-primary" id="step3Next">Продолжить →</button>
         </div>
 
-        <!-- ШАГ 4 -->
+        <!-- ============================================================ -->
+        <!-- STEP 4: CONFIRM -->
+        <!-- ============================================================ -->
         <div class="step" data-step="4">
-            <div class="step-title">
-                ✅ Проверьте данные
-                <small>Всё верно? Нажмите "Отправить"</small>
+            <div class="step-title">Проверка данных</div>
+            <div class="step-sub">Пожалуйста, проверьте введённую информацию</div>
+
+            <div class="preview-box">
+                <div class="row">
+                    <span class="label">Страна</span>
+                    <span class="value" id="previewCountry">—</span>
+                </div>
+                <div class="row">
+                    <span class="label">Возрастная группа</span>
+                    <span class="value" id="previewAge">—</span>
+                </div>
+                <div class="divider"></div>
+                <div class="row">
+                    <span class="label">Контакт</span>
+                    <span class="value gold" id="previewContact">—</span>
+                </div>
+                <div class="row">
+                    <span class="label">Персональный менеджер</span>
+                    <span class="value gold" id="previewManager">—</span>
+                </div>
             </div>
-            <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
-                <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">🇨🇳 Страна: <span id="previewCountry" style="color:#fff; font-weight:600;">—</span></p>
-                <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">🎂 Возраст: <span id="previewAge" style="color:#fff; font-weight:600;">—</span></p>
-                <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">📱 Контакт: <span id="previewContact" style="color:#fff; font-weight:600;">—</span></p>
-                <p style="color: rgba(255,255,255,0.6);">👤 Менеджер: <span id="previewManager" style="color:#6c63ff; font-weight:600;">—</span></p>
-            </div>
-            <button class="btn-primary" id="submitBtn">🚀 Отправить заявку</button>
-            <button class="btn-secondary" id="backToStep3">← Назад</button>
+
+            <button class="btn-primary" id="submitBtn">Отправить заявку</button>
+            <button class="btn-secondary" id="backToStep3">← Вернуться</button>
         </div>
 
+        <!-- ============================================================ -->
         <!-- SUCCESS -->
+        <!-- ============================================================ -->
         <div class="success" id="successScreen">
             <div class="icon">✅</div>
-            <h2>Регистрация успешна!</h2>
+            <h2>Заявка принята</h2>
             <p>
-                В течение дня с вами свяжется наш менеджер для консультации.<br><br>
-                А пока вы ждете, подпишитесь на наш Telegram-канал,<br>
-                чтобы быстрее ознакомиться с информацией о старте.
+                Ваш персональный менеджер свяжется с вами<br>
+                <strong style="color:rgba(255,255,255,0.6);">в течение 24 часов</strong>
             </p>
             <a href="https://t.me/your_channel" target="_blank" class="telegram-btn">
-                📲 Перейти в Telegram-канал
+                Перейти в Telegram-канал
             </a>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer-note">
+            Bear Capital Investment Group © 2026
         </div>
     </div>
 
+    <!-- ============================================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================================ -->
     <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js">
     </script>
     <script>
         // ========================================
-        // ТВОИ ДАННЫЕ SUPABASE
+        // SUPABASE CONFIG
         // ========================================
         const SUPABASE_URL = 'https://pvdsbslqpvnvqckefvuf.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_sSNY7UgCqVBwpGipA_vcsw_s6uRk7yZ';
 
         // ========================================
-        // СОСТОЯНИЕ
+        // STATE
         // ========================================
         const state = {
             currentStep: 1,
@@ -397,7 +619,7 @@
         };
 
         // ========================================
-        // ПОЛУЧАЕМ MANAGER_ID ИЗ URL
+        // GET MANAGER FROM URL
         // ========================================
         function getManagerFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -406,12 +628,12 @@
                 state.managerId = ref;
                 document.getElementById('previewManager').textContent = ref;
             } else {
-                document.getElementById('previewManager').textContent = 'Не назначен';
+                document.getElementById('previewManager').textContent = 'Стандартный';
             }
         }
 
         // ========================================
-        // РАБОТА С ШАГАМИ
+        // STEP NAVIGATION
         // ========================================
         function goToStep(step) {
             document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
@@ -435,7 +657,7 @@
         }
 
         // ========================================
-        // ОБРАБОТЧИКИ КНОПОК ВЫБОРА
+        // OPTION BUTTONS
         // ========================================
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -459,7 +681,7 @@
         });
 
         // ========================================
-        // ШАГ 3: КОНТАКТЫ
+        // STEP 3: CONTACT
         // ========================================
         const contactInput = document.getElementById('contactInput');
         const noTelegramCheck = document.getElementById('noTelegram');
@@ -479,7 +701,7 @@
         document.getElementById('step3Next').addEventListener('click', function() {
             const contact = contactInput.value.trim();
             if (!contact) {
-                alert('Пожалуйста, введите контакт для связи');
+                alert('Пожалуйста, укажите контакт для связи');
                 return;
             }
 
@@ -488,7 +710,7 @@
             if (state.noTelegram) {
                 const altContact = altContactInput.value.trim();
                 if (!altContact) {
-                    alert('Пожалуйста, введите альтернативный контакт');
+                    alert('Пожалуйста, укажите альтернативный контакт');
                     return;
                 }
                 state.altContact = altContact;
@@ -502,7 +724,7 @@
         });
 
         // ========================================
-        // ШАГ 4: ОТПРАВКА
+        // STEP 4: SUBMIT
         // ========================================
         document.getElementById('backToStep3').addEventListener('click', function() {
             goToStep(3);
@@ -560,34 +782,34 @@
 
             } catch (error) {
                 console.error('Ошибка отправки:', error);
-                alert('❌ Произошла ошибка при отправке. Пожалуйста, попробуйте позже.');
+                alert('❌ Произошла ошибка. Пожалуйста, попробуйте позже.');
             } finally {
                 btn.disabled = false;
-                btn.textContent = '🚀 Отправить заявку';
+                btn.textContent = 'Отправить заявку';
             }
         });
 
         // ========================================
-        // ОТСЛЕЖИВАНИЕ ПОВЕДЕНИЯ
+        // BEHAVIOR TRACKING
         // ========================================
         document.addEventListener('mousemove', () => { state.hadMouseMove = true; });
         document.addEventListener('scroll', () => { state.hadScroll = true; });
 
         // ========================================
-        // СОЗДАЕМ SESSION ID
+        // SESSION ID
         // ========================================
         if (!sessionStorage.getItem('sessionId')) {
             sessionStorage.setItem('sessionId', crypto.randomUUID());
         }
 
         // ========================================
-        // ИНИЦИАЛИЗАЦИЯ
+        // INIT
         // ========================================
         getManagerFromURL();
         goToStep(1);
 
-        console.log('🚀 LeadHub загружен!');
-        console.log('📊 Менеджер:', state.managerId || 'Не назначен');
+        console.log('🐻 Bear Capital загружен');
+        console.log('📊 Менеджер:', state.managerId || 'Стандартный');
     </script>
 
 </body>
