@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Арбитраж трафика</title>
+    <style>
+        /* ===== RESET & BASE ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px;
+            max-width: 520px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #fff;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: #6c63ff;
+        }
+
+        /* ===== СТЕПЫ ===== */
+        .step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .step-title small {
+            display: block;
+            font-weight: 400;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 5px;
+        }
+
+        /* ===== КНОПКИ ВЫБОРА ===== */
+        .options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        .option-btn.selected {
+            background: #6c63ff;
+            border-color: #6c63ff;
+            box-shadow: 0 8px 25px rgba(108, 99, 255, 0.3);
+        }
+
+        /* ===== ПОЛЯ ВВОДА ===== */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #6c63ff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .input-group input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        .input-group select option {
+            background: #1a1f3a;
+            color: #fff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 16px 0;
+            cursor: pointer;
+            color: rgba(255,255,255,0.7);
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #6c63ff;
+            cursor: pointer;
+        }
+
+        /* ===== КНОПКА ===== */
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+            border: none;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 35px rgba(108, 99, 255, 0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* ===== SUCCESS ===== */
+        .success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success.active {
+            display: block;
+            animation: fadeIn 0.6s ease;
+        }
+        .success .icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+        .success h2 {
+            color: #fff;
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+        .success p {
+            color: rgba(255,255,255,0.7);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .success .telegram-btn {
+            display: inline-block;
+            padding: 14px 40px;
+            background: #0088cc;
+            border-radius: 16px;
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .success .telegram-btn:hover {
+            background: #006699;
+            transform: scale(1.05);
+        }
+
+        /* ===== ПРОГРЕСС-БАР ===== */
+        .progress {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+        .progress .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            transition: all 0.3s ease;
+        }
+        .progress .dot.active {
+            background: #6c63ff;
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.5);
+        }
+        .progress .dot.done {
+            background: rgba(108, 99, 255, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 480px) {
+            .container { padding: 24px; }
+            .option-btn { padding: 12px 20px; font-size: 14px; min-width: 80px; }
+            .logo h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <!-- Лого -->
+    <div class="logo">
+        <h1>🚀 <span>Lead</span>Hub</h1>
+    </div>
+
+    <!-- Прогресс -->
+    <div class="progress" id="progress">
+        <span class="dot active" data-step="1"></span>
+        <span class="dot" data-step="2"></span>
+        <span class="dot" data-step="3"></span>
+        <span class="dot" data-step="4"></span>
+    </div>
+
+    <!-- ========== ШАГ 1: СТРАНА ========== -->
+    <div class="step active" data-step="1">
+        <div class="step-title">
+            🌍 Ваша страна проживания
+            <small>Выберите один вариант</small>
+        </div>
+        <div class="options" id="countryOptions">
+            <button class="option-btn" data-value="Россия">🇷🇺 Россия</button>
+            <button class="option-btn" data-value="Другая">🌍 Другая страна</button>
+        </div>
+    </div>
+
+    <!-- ========== ШАГ 2: ВОЗРАСТ ========== -->
+    <div class="step" data-step="2">
+        <div class="step-title">
+            🎂 Ваш возраст
+            <small>Выберите вашу возрастную группу</small>
+        </div>
+        <div class="options" id="ageOptions">
+            <button class="option-btn" data-value="до 24">🧑 Молодой (до 24)</button>
+            <button class="option-btn" data-value="24-55">👨 Опытный (24-55)</button>
+            <button class="option-btn" data-value="55+">👴 Зрелый (55+)</button>
+        </div>
+    </div>
+
+    <!-- ========== ШАГ 3: КОНТАКТ ========== -->
+    <div class="step" data-step="3">
+        <div class="step-title">
+            📱 Ваш контакт
+            <small>Как с вами связаться?</small>
+        </div>
+
+        <div class="input-group">
+            <label>Ник в Telegram или номер телефона</label>
+            <input type="text" id="contactInput" placeholder="@username или +7 999 999-99-99">
+        </div>
+
+        <div class="checkbox-group" id="noTelegramCheckbox">
+            <input type="checkbox" id="noTelegram">
+            <label for="noTelegram">❌ Я не пользуюсь Telegram</label>
+        </div>
+
+        <!-- Альтернативные контакты (появляются при чеке) -->
+        <div id="alternativeContacts" class="hidden">
+            <div class="input-group" style="margin-top: 16px;">
+                <label>Ваш контакт (почта или номер)</label>
+                <input type="text" id="altContactInput" placeholder="example@mail.com или +7 999 999-99-99">
+            </div>
+            <div class="input-group">
+                <label>Выберите мессенджер</label>
+                <select id="messengerSelect">
+                    <option value="WhatsApp">WhatsApp</option>
+                    <option value="Viber">Viber</option>
+                    <option value="Telegram">Telegram (другой аккаунт)</option>
+                    <option value="Email">Email</option>
+                    <option value="Другое">Другое</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-primary" id="step3Next">Далее →</button>
+    </div>
+
+    <!-- ========== ШАГ 4: ПРОВЕРКА И ОТПРАВКА ========== -->
+    <div class="step" data-step="4">
+        <div class="step-title">
+            ✅ Проверьте данные
+            <small>Всё верно? Нажмите "Отправить"</small>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">🇨🇳 Страна: <span id="previewCountry" style="color:#fff; font-weight:600;">—</span></p>
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">🎂 Возраст: <span id="previewAge" style="color:#fff; font-weight:600;">—</span></p>
+            <p style="color: rgba(255,255,255,0.6); margin-bottom: 8px;">📱 Контакт: <span id="previewContact" style="color:#fff; font-weight:600;">—</span></p>
+            <p style="color: rgba(255,255,255,0.6);">👤 Менеджер: <span id="previewManager" style="color:#6c63ff; font-weight:600;">—</span></p>
+        </div>
+
+        <button class="btn-primary" id="submitBtn">🚀 Отправить заявку</button>
+        <button class="btn-secondary" id="backToStep3">← Назад</button>
+    </div>
+
+    <!-- ========== SUCCESS ========== -->
+    <div class="success" id="successScreen">
+        <div class="icon">✅</div>
+        <h2>Регистрация успешна!</h2>
+        <p>
+            В течение дня с вами свяжется наш менеджер для консультации.<br><br>
+            А пока вы ждете, подпишитесь на наш Telegram-канал,<br>
+            чтобы быстрее ознакомиться с информацией о старте.
+        </p>
+        <a href="https://t.me/your_channel" target="_blank" class="telegram-btn">
+            📲 Перейти в Telegram-канал
+        </a>
+    </div>
+</div>
+
+<!-- ============================================ -->
+<!-- ========== JAVASCRIPT ====================== -->
+<!-- ============================================ -->
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js">
+</script>
+<script>
+    // ========================================
+    // 1. КОНФИГУРАЦИЯ SUPABASE
+    // ========================================
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
+    // ========================================
+    // 2. СОСТОЯНИЕ ПРИЛОЖЕНИЯ
+    // ========================================
+    const state = {
+        currentStep: 1,
+        country: null,
+        age: null,
+        contact: null,
+        noTelegram: false,
+        altContact: null,
+        messenger: 'WhatsApp',
+        managerId: null, // будет из URL
+        fingerprint: null,
+        startTime: Date.now(),
+        stepStartTime: Date.now(),
+        hadMouseMove: false,
+        hadScroll: false,
+    };
+
+    // ========================================
+    // 3. ПОЛУЧАЕМ MANAGER_ID ИЗ URL
+    // ========================================
+    function getManagerFromURL() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const ref = urlParams.get('ref');
+        if (ref) {
+            state.managerId = ref;
+            document.getElementById('previewManager').textContent = ref;
+        } else {
+            document.getElementById('previewManager').textContent = 'Не назначен';
+        }
+    }
+
+    // ========================================
+    // 4. РАБОТА С ШАГАМИ
+    // ========================================
+    function goToStep(step) {
+        // Скрываем все шаги
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        // Показываем нужный
+        document.querySelector(`.step[data-step="${step}"]`).classList.add('active');
+
+        // Обновляем прогресс
+        document.querySelectorAll('.progress .dot').forEach(dot => {
+            const dotStep = parseInt(dot.dataset.step);
+            dot.classList.remove('active', 'done');
+            if (dotStep === step) dot.classList.add('active');
+            else if (dotStep < step) dot.classList.add('done');
+        });
+
+        state.currentStep = step;
+        state.stepStartTime = Date.now();
+
+        // Обновляем превью на 4-м шаге
+        if (step === 4) {
+            document.getElementById('previewCountry').textContent = state.country || '—';
+            document.getElementById('previewAge').textContent = state.age || '—';
+            document.getElementById('previewContact').textContent = state.contact || '—';
+        }
+    }
+
+    // ========================================
+    // 5. ОБРАБОТЧИКИ КНОПОК ВЫБОРА
+    // ========================================
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const parent = this.closest('.options');
+            const step = this.closest('.step');
+
+            // Убираем выделение у всех в этой группе
+            parent.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+            // Выделяем текущую
+            this.classList.add('selected');
+
+            // Сохраняем значение
+            const value = this.dataset.value;
+            const stepNum = parseInt(step.dataset.step);
+
+            if (stepNum === 1) {
+                state.country = value;
+                // Переход на следующий шаг через 400ms
+                setTimeout(() => goToStep(2), 400);
+            } else if (stepNum === 2) {
+                state.age = value;
+                setTimeout(() => goToStep(3), 400);
+            }
+        });
+    });
+
+    // ========================================
+    // 6. ШАГ 3: КОНТАКТЫ
+    // ========================================
+    const contactInput = document.getElementById('contactInput');
+    const noTelegramCheck = document.getElementById('noTelegram');
+    const altContacts = document.getElementById('alternativeContacts');
+    const altContactInput = document.getElementById('altContactInput');
+    const messengerSelect = document.getElementById('messengerSelect');
+
+    noTelegramCheck.addEventListener('change', function() {
+        state.noTelegram = this.checked;
+        if (this.checked) {
+            altContacts.classList.remove('hidden');
+        } else {
+            altContacts.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('step3Next').addEventListener('click', function() {
+        const contact = contactInput.value.trim();
+        if (!contact) {
+            alert('Пожалуйста, введите контакт для связи');
+            return;
+        }
+
+        state.contact = contact;
+
+        if (state.noTelegram) {
+            const altContact = altContactInput.value.trim();
+            if (!altContact) {
+                alert('Пожалуйста, введите альтернативный контакт');
+                return;
+            }
+            state.altContact = altContact;
+            state.messenger = messengerSelect.value;
+        } else {
+            state.altContact = null;
+            state.messenger = 'Telegram';
+        }
+
+        goToStep(4);
+    });
+
+    // ========================================
+    // 7. ШАГ 4: ОТПРАВКА
+    // ========================================
+    document.getElementById('backToStep3').addEventListener('click', function() {
+        goToStep(3);
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', async function() {
+        const btn = this;
+        btn.disabled = true;
+        btn.textContent = '⏳ Отправка...';
+
+        try {
+            // Собираем отпечаток
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            const fingerprint = result.visitorId;
+
+            // Собираем все данные
+            const formData = {
+                country: state.country,
+                age_group: state.age,
+                contact: state.contact,
+                messenger_type: state.messenger,
+                alternative_contact: state.altContact,
+                manager_id: state.managerId,
+                referral_source: new URLSearchParams(window.location.search).get('source') || null,
+                fingerprint: fingerprint,
+                ip_address: null, // заполним на серверной стороне, если нужно
+                user_agent: navigator.userAgent,
+                session_id: sessionStorage.getItem('sessionId') || crypto.randomUUID(),
+                time_on_page: Math.floor((Date.now() - state.startTime) / 1000),
+                form_fill_time: Math.floor((Date.now() - state.stepStartTime) / 1000),
+                had_mouse_movement: state.hadMouseMove,
+                had_scroll: state.hadScroll,
+                // UTM
+                utm_source: new URLSearchParams(window.location.search).get('utm_source') || null,
+                utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || null,
+                utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || null,
+                status: 'Новый'
+            };
+
+            // Отправка в Supabase
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/leads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Ошибка ${response.status}: ${await response.text()}`);
+            }
+
+            // Успех!
+            document.querySelector('.step.active').classList.remove('active');
+            document.getElementById('successScreen').classList.add('active');
+            document.getElementById('progress').style.display = 'none';
+
+        } catch (error) {
+            console.error('Ошибка отправки:', error);
+            alert('❌ Произошла ошибка при отправке. Пожалуйста, попробуйте позже.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = '🚀 Отправить заявку';
+        }
+    });
+
+    // ========================================
+    // 8. ОТСЛЕЖИВАНИЕ ПОВЕДЕНИЯ
+    // ========================================
+    document.addEventListener('mousemove', () => { state.hadMouseMove = true; });
+    document.addEventListener('scroll', () => { state.hadScroll = true; });
+
+    // ========================================
+    // 9. СОЗДАЕМ SESSION ID
+    // ========================================
+    if (!sessionStorage.getItem('sessionId')) {
+        sessionStorage.setItem('sessionId', crypto.randomUUID());
+    }
+
+    // ========================================
+    // 10. ИНИЦИАЛИЗАЦИЯ
+    // ========================================
+    getManagerFromURL();
+    goToStep(1);
+
+    console.log('🚀 LeadHub загружен!');
+    console.log('📊 Менеджер:', state.managerId || 'Не назначен');
+</script>
+
+</body>
+</html>
