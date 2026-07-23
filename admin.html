@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bear Capital — Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            color: #d4a84b;
+        }
+
+        .header .badge {
+            background: rgba(212, 168, 75, 0.15);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #d4a84b;
+            border: 1px solid rgba(212, 168, 75, 0.15);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 4px;
+        }
+
+        .tabs button {
+            padding: 12px 28px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.3px;
+        }
+
+        .tabs button:hover {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .tabs button.active {
+            color: #d4a84b;
+            border-bottom-color: #d4a84b;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .stat-card .value.gold { color: #d4a84b; }
+        .stat-card .value.green { color: #4caf50; }
+        .stat-card .value.red { color: #f44336; }
+        .stat-card .value.gray { color: rgba(255,255,255,0.3); }
+        .stat-card .value.purple { color: #ce93d8; }
+        .stat-card .value.orange { color: #ff9800; }
+        .stat-card .value.blue { color: #42a5f5; }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #d4a84b;
+        }
+
+        .filters input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .filters select option {
+            background: #111111;
+            color: #fff;
+        }
+
+        .search-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-group input {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            width: 250px;
+        }
+
+        .search-group input:focus {
+            border-color: #d4a84b;
+        }
+
+        .search-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-search {
+            padding: 10px 20px;
+            background: rgba(212, 168, 75, 0.15);
+            border: 1px solid rgba(212, 168, 75, 0.2);
+            border-radius: 10px;
+            color: #d4a84b;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-search:hover {
+            background: rgba(212, 168, 75, 0.25);
+        }
+
+        .btn-refresh {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .btn-danger {
+            padding: 6px 14px;
+            background: rgba(244, 67, 54, 0.15);
+            border: 1px solid rgba(244, 67, 54, 0.2);
+            border-radius: 8px;
+            color: #f44336;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: rgba(244, 67, 54, 0.25);
+        }
+
+        .btn-small {
+            padding: 4px 12px;
+            background: rgba(212, 168, 75, 0.12);
+            border: 1px solid rgba(212, 168, 75, 0.15);
+            border-radius: 6px;
+            color: #d4a84b;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn-small:hover {
+            background: rgba(212, 168, 75, 0.25);
+        }
+
+        .btn-small.danger {
+            background: rgba(244, 67, 54, 0.12);
+            border-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .btn-small.danger:hover {
+            background: rgba(244, 67, 54, 0.25);
+        }
+
+        .btn-small.comment {
+            background: rgba(33, 150, 243, 0.12);
+            border-color: rgba(33, 150, 243, 0.2);
+            color: #42a5f5;
+        }
+
+        .btn-small.comment:hover {
+            background: rgba(33, 150, 243, 0.25);
+        }
+
+        .btn-small.comment.has-comment {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .btn-small.comment.has-comment:hover {
+            background: rgba(76, 175, 80, 0.25);
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 900px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .status-badge.new { background: rgba(212, 168, 75, 0.15); color: #d4a84b; }
+        .status-badge.work { background: rgba(255, 152, 0, 0.15); color: #ff9800; }
+        .status-badge.notwork { background: rgba(244, 67, 54, 0.15); color: #f44336; }
+        .status-badge.contact { background: rgba(33, 150, 243, 0.15); color: #42a5f5; }
+        .status-badge.deposit { background: rgba(156, 39, 176, 0.15); color: #ce93d8; }
+        .status-badge.suspicious { background: rgba(255, 152, 0, 0.25); color: #ff9800; border: 1px solid rgba(255, 152, 0, 0.3); }
+
+        .status-select {
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .status-select:focus {
+            border-color: #d4a84b;
+        }
+        .status-select option {
+            background: #111111;
+            color: #fff;
+        }
+
+        .pdp-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pdp-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .pdp-toggle.active {
+            border-color: rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+            background: rgba(76, 175, 80, 0.08);
+        }
+
+        .pdp-toggle .indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .pdp-toggle.active .indicator {
+            background: #4caf50;
+            box-shadow: 0 0 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .badge-country {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-country.ru {
+            background: rgba(212, 168, 75, 0.15);
+            color: #d4a84b;
+        }
+
+        .badge-country.other {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .badge-age {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-age.target {
+            background: rgba(76, 175, 80, 0.12);
+            color: #4caf50;
+        }
+
+        .badge-age.other {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .badge-type {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-type.lead {
+            background: rgba(212, 168, 75, 0.12);
+            color: #d4a84b;
+        }
+
+        .badge-type.nonliquid {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .fingerprint {
+            font-family: monospace;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 14px;
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .manager-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .last-update {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.12);
+            margin-left: auto;
+        }
+
+        .ip-cell {
+            font-family: monospace;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .suspicious-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .suspicious-badge.yes {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.2);
+        }
+
+        .suspicious-badge.no {
+            background: rgba(76, 175, 80, 0.12);
+            color: #4caf50;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #111111;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            overflow: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .modal-header h2 span {
+            color: #d4a84b;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 24px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal table {
+            font-size: 12px;
+            min-width: 600px;
+        }
+        .modal th,
+        .modal td {
+            padding: 8px 12px;
+        }
+
+        /* ===== COMMENT MODAL ===== */
+        .comment-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(6px);
+        }
+
+        .comment-modal-overlay.active {
+            display: flex;
+        }
+
+        .comment-modal {
+            background: #111111;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 100%;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .comment-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .comment-modal-header h3 {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .comment-modal-header h3 span {
+            color: #d4a84b;
+        }
+
+        .comment-modal-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 24px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .comment-modal-close:hover {
+            color: #fff;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .comment-textarea:focus {
+            border-color: #d4a84b;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .comment-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .comment-modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            justify-content: flex-end;
+        }
+
+        .comment-modal-actions button {
+            padding: 10px 28px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .comment-modal-actions .btn-save {
+            background: #d4a84b;
+            border: none;
+            color: #0a0a0a;
+        }
+
+        .comment-modal-actions .btn-save:hover {
+            background: #e0b85c;
+        }
+
+        .comment-modal-actions .btn-cancel {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .comment-modal-actions .btn-cancel:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ===== ADMIN LOGIN ===== */
+        .admin-login {
+            max-width: 380px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .admin-login h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .admin-login h1 span {
+            color: #d4a84b;
+        }
+
+        .admin-login p {
+            color: rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .admin-login input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 8px 0 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+
+        .admin-login input:focus {
+            border-color: #d4a84b;
+        }
+
+        .admin-login button {
+            width: 100%;
+            padding: 14px;
+            background: #d4a84b;
+            border: none;
+            border-radius: 12px;
+            color: #0a0a0a;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .admin-login button:hover {
+            background: #e0b85c;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0; }
+            .header { flex-direction: column; align-items: stretch; gap: 10px; }
+            .tabs button { padding: 10px 16px; font-size: 13px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            table { font-size: 12px; min-width: 800px; }
+            th, td { padding: 8px 10px; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .filters input, .filters select { width: 100%; }
+            .search-group input { width: 100%; }
+            .btn-search { width: 100%; text-align: center; }
+            .btn-refresh { width: 100%; text-align: center; }
+            .modal { padding: 16px; }
+            .comment-modal { padding: 20px; }
+            .comment-textarea { min-height: 150px; }
+            .action-cell { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <!-- ===== LOGIN ===== -->
+        <div id="loginScreen" class="admin-login">
+            <h1>Bear <span>Capital</span></h1>
+            <p>Административная панель</p>
+            <input type="password" id="adminPassword" placeholder="Введите пароль...">
+            <button id="adminLoginBtn">Войти</button>
+        </div>
+
+        <!-- ===== ADMIN PANEL ===== -->
+        <div id="adminPanel" style="display:none;">
+            <div class="header">
+                <h1>⚙️ <span>Bear</span> Admin</h1>
+                <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                    <span class="badge">👑 Администратор</span>
+                    <button onclick="logout()" style="padding:8px 18px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:rgba(255,255,255,0.3);cursor:pointer;font-family:'Inter',sans-serif;">🚪 Выйти</button>
+                    <span class="last-update" id="lastUpdate">Обновлено: —</span>
+                </div>
+            </div>
+
+            <!-- ===== TABS ===== -->
+            <div class="tabs">
+                <button class="active" data-tab="leads">📋 Основные лиды</button>
+                <button data-tab="nonliquid">📦 Неликвиды</button>
+                <button data-tab="all">📊 Все заявки</button>
+                <button data-tab="managers">👥 Менеджеры</button>
+                <button data-tab="fraud">🚫 Фрод-анализ</button>
+            </div>
+
+            <!-- ===== TAB: LEADS ===== -->
+            <div class="tab-content active" id="tab-leads">
+                <div class="stats-grid" id="leadsStats">
+                    <div class="stat-card"><div class="label">Всего лидов</div><div class="value gold" id="leadsTotal">0</div></div>
+                    <div class="stat-card"><div class="label">Новые</div><div class="value" style="color:#d4a84b;" id="leadsNew">0</div></div>
+                    <div class="stat-card"><div class="label">В работе</div><div class="value orange" id="leadsWork">0</div></div>
+                    <div class="stat-card"><div class="label">Не в работе</div><div class="value red" id="leadsNotwork">0</div></div>
+                    <div class="stat-card"><div class="label">Связь</div><div class="value blue" id="leadsContact">0</div></div>
+                    <div class="stat-card"><div class="label">Депозит в работе</div><div class="value purple" id="leadsDeposit">0</div></div>
+                    <div class="stat-card"><div class="label">ПДП ✅</div><div class="value green" id="leadsPdp">0</div></div>
+                    <div class="stat-card"><div class="label">Подозрительно</div><div class="value" style="color:#ff9800;" id="leadsSuspicious">0</div></div>
+                </div>
+
+                <div class="filters">
+                    <div class="search-group">
+                        <input type="text" id="leadsSearch" placeholder="🔍 Поиск по контакту...">
+                        <button class="btn-search" id="leadsSearchBtn">Найти</button>
+                        <button class="btn-refresh" id="refreshLeads">🔄 Обновить</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Менеджер</th>
+                                <th>Страна</th>
+                                <th>Возраст</th>
+                                <th>Мессенджер</th>
+                                <th>Контакт</th>
+                                <th>Статус</th>
+                                <th>ПДП</th>
+                                <th>IP</th>
+                                <th>Подозр.</th>
+                                <th>Комментарий</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsBody">
+                            <tr><td colspan="11" class="loading">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: NONLIQUID ===== -->
+            <div class="tab-content" id="tab-nonliquid">
+                <div class="stats-grid" id="nonliquidStats">
+                    <div class="stat-card"><div class="label">Всего неликвидов</div><div class="value gray" id="nonliquidTotal">0</div></div>
+                    <div class="stat-card"><div class="label">Другая страна</div><div class="value gray" id="nonliquidCountry">0</div></div>
+                    <div class="stat-card"><div class="label">Не тот возраст</div><div class="value gray" id="nonliquidAge">0</div></div>
+                </div>
+
+                <div class="filters">
+                    <div class="search-group">
+                        <input type="text" id="nonliquidSearch" placeholder="🔍 Поиск по контакту...">
+                        <button class="btn-search" id="nonliquidSearchBtn">Найти</button>
+                        <button class="btn-refresh" id="refreshNonliquid">🔄 Обновить</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Менеджер</th>
+                                <th>Страна</th>
+                                <th>Возраст</th>
+                                <th>Мессенджер</th>
+                                <th>Контакт</th>
+                                <th>Причина</th>
+                                <th>Статус</th>
+                                <th>ПДП</th>
+                                <th>IP</th>
+                                <th>Подозр.</th>
+                                <th>Комментарий</th>
+                            </tr>
+                        </thead>
+                        <tbody id="nonliquidBody">
+                            <tr><td colspan="12" class="loading">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: ALL ===== -->
+            <div class="tab-content" id="tab-all">
+                <div class="stats-grid" id="allStats">
+                    <div class="stat-card"><div class="label">Всего заявок</div><div class="value gold" id="allTotal">0</div></div>
+                    <div class="stat-card"><div class="label">Лиды</div><div class="value green" id="allLeads">0</div></div>
+                    <div class="stat-card"><div class="label">Неликвиды</div><div class="value gray" id="allNonliquid">0</div></div>
+                    <div class="stat-card"><div class="label">ПДП ✅</div><div class="value green" id="allPdp">0</div></div>
+                    <div class="stat-card"><div class="label">Подозрительно</div><div class="value" style="color:#ff9800;" id="allSuspicious">0</div></div>
+                </div>
+
+                <div class="filters">
+                    <div class="search-group">
+                        <input type="text" id="allSearch" placeholder="🔍 Поиск по контакту...">
+                        <button class="btn-search" id="allSearchBtn">Найти</button>
+                        <button class="btn-refresh" id="refreshAll">🔄 Обновить</button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Дата</th>
+                                <th>Менеджер</th>
+                                <th>Страна</th>
+                                <th>Возраст</th>
+                                <th>Тип</th>
+                                <th>Мессенджер</th>
+                                <th>Контакт</th>
+                                <th>Статус</th>
+                                <th>ПДП</th>
+                                <th>IP</th>
+                                <th>Подозр.</th>
+                                <th>Комментарий</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allBody">
+                            <tr><td colspan="12" class="loading">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: MANAGERS ===== -->
+            <div class="tab-content" id="tab-managers">
+                <div style="margin-bottom:20px;display:flex;gap:12px;flex-wrap:wrap;">
+                    <button class="btn-search" onclick="addManager()" style="background:rgba(212,168,75,0.15);border-color:rgba(212,168,75,0.2);color:#d4a84b;padding:12px 24px;border-radius:10px;cursor:pointer;font-weight:500;font-family:'Inter',sans-serif;">➕ Добавить менеджера</button>
+                    <button class="btn-refresh" onclick="loadAllData()" style="padding:12px 24px;">🔄 Обновить</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Лиды</th>
+                                <th>Неликвиды</th>
+                                <th>ПДП ✅</th>
+                                <th>Всего</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="managersBody">
+                            <tr><td colspan="7" class="loading">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== TAB: FRAUD ===== -->
+            <div class="tab-content" id="tab-fraud">
+                <div class="stats-grid" id="fraudStats">
+                    <div class="stat-card"><div class="label">Уникальных IP</div><div class="value gold" id="fraudUniqueIP">0</div></div>
+                    <div class="stat-card"><div class="label">IP с 2+ заявками</div><div class="value" style="color:#ff9800;" id="fraudSuspiciousIP">0</div></div>
+                    <div class="stat-card"><div class="label">Всего подозрительных</div><div class="value red" id="fraudTotalSuspicious">0</div></div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>IP адрес</th>
+                                <th>Кол-во заявок</th>
+                                <th>Менеджеры</th>
+                                <th>Статусы</th>
+                                <th>Последняя заявка</th>
+                                <th>Действие</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fraudBody">
+                            <tr><td colspan="6" class="loading">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: ЗАЯВКИ МЕНЕДЖЕРА ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Заявки менеджера: <span id="modalManagerName">—</span></h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div style="margin-bottom:12px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;">
+                <span>📋 Лиды: <strong id="modalLeadsCount" style="color:#4caf50;">0</strong></span>
+                <span>📦 Неликвиды: <strong id="modalNonliquidCount" style="color:rgba(255,255,255,0.3);">0</strong></span>
+                <span>✅ ПДП: <strong id="modalPdpCount" style="color:#4caf50;">0</strong></span>
+                <span>📊 Всего: <strong id="modalTotalCount" style="color:#d4a84b;">0</strong></span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Страна</th>
+                            <th>Возраст</th>
+                            <th>Тип</th>
+                            <th>Мессенджер</th>
+                            <th>Контакт</th>
+                            <th>Статус</th>
+                            <th>ПДП</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalBody">
+                        <tr><td colspan="8" class="loading">Загрузка...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: КОММЕНТАРИЙ ===== -->
+    <div class="comment-modal-overlay" id="commentModalOverlay">
+        <div class="comment-modal">
+            <div class="comment-modal-header">
+                <h3>💬 Комментарий к заявке #<span id="commentLeadId">—</span></h3>
+                <button class="comment-modal-close" onclick="closeCommentModal()">✕</button>
+            </div>
+            <textarea class="comment-textarea" id="commentTextarea" placeholder="Введите ваш комментарий..."></textarea>
+            <div class="comment-modal-actions">
+                <button class="btn-cancel" onclick="closeCommentModal()">Отмена</button>
+                <button class="btn-save" onclick="saveCommentFromModal()">💾 Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- SCRIPTS -->
+    <!-- ============================================================ -->
+    <script>
+        // ========================================
+        // SUPABASE CONFIG
+        // ========================================
+        const SUPABASE_URL = 'https://pvdsbslqpvnvqckefvuf.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_sSNY7UgCqVBwpGipA_vcsw_s6uRk7yZ';
+        const ADMIN_PASSWORD = 'Admin.12345';
+
+        let allLeads = [];
+        let allManagers = [];
+        let currentCommentLeadId = null;
+
+        // ========================================
+        // LOGIN — ЗАПОМИНАЕМ ПАРОЛЬ
+        // ========================================
+        function getAdminAuth() {
+            const saved = localStorage.getItem('adminAuth');
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) { return null; }
+            }
+            return null;
+        }
+
+        function setAdminAuth() {
+            localStorage.setItem('adminAuth', JSON.stringify({ logged: true }));
+        }
+
+        function clearAdminAuth() {
+            localStorage.removeItem('adminAuth');
+        }
+
+        const auth = getAdminAuth();
+
+        if (auth && auth.logged === true) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAllData();
+        }
+
+        document.getElementById('adminLoginBtn').addEventListener('click', function() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASSWORD) {
+                setAdminAuth();
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                loadAllData();
+            } else {
+                alert('❌ Неверный пароль!');
+                document.getElementById('adminPassword').value = '';
+                document.getElementById('adminPassword').focus();
+            }
+        });
+
+        document.getElementById('adminPassword').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+        });
+
+        function logout() {
+            if (confirm('Выйти?')) {
+                clearAdminAuth();
+                location.reload();
+            }
+        }
+
+        // ========================================
+        // LOAD DATA
+        // ========================================
+        async function loadAllData() {
+            await Promise.all([loadLeads(), loadManagers()]);
+            renderAllTabs();
+            document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU');
+        }
+
+        async function loadLeads() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/leads?order=created_at.desc&limit=1000`, {
+                        headers: { 'apikey': SUPABASE_ANON_KEY }
+                    }
+                );
+                allLeads = await response.json();
+            } catch (error) {
+                console.error('Ошибка загрузки заявок:', error);
+            }
+        }
+
+        async function loadManagers() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/managers?order=created_at.desc`, {
+                        headers: { 'apikey': SUPABASE_ANON_KEY }
+                    }
+                );
+                allManagers = await response.json();
+            } catch (error) {
+                console.error('Ошибка загрузки менеджеров:', error);
+            }
+        }
+
+        // ========================================
+        // HELPERS
+        // ========================================
+        function isTargetLead(lead) {
+            return lead.country === 'Россия' && lead.age_group === '24-55';
+        }
+
+        function getNonliquidReason(lead) {
+            if (lead.country !== 'Россия' && lead.age_group !== '24-55') return 'Страна + Возраст';
+            if (lead.country !== 'Россия') return 'Другая страна';
+            if (lead.age_group !== '24-55') return 'Не тот возраст';
+            return null;
+        }
+
+        function getManagerName(id) {
+            const m = allManagers.find(x => x.id === id);
+            return m ? m.full_name : (id || '—');
+        }
+
+        function getManagerById(id) {
+            return allManagers.find(x => x.id === id);
+        }
+
+        function getStatusClass(status) {
+            const map = {
+                'Новый': 'new',
+                'В работе': 'work',
+                'Не в работе': 'notwork',
+                'Связь': 'contact',
+                'Депозит в работе': 'deposit',
+                'Подозрительно': 'suspicious'
+            };
+            return map[status] || 'new';
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getCountryBadge(country) {
+            if (country === 'Россия') return '<span class="badge-country ru">Россия</span>';
+            return `<span class="badge-country other">${country || '—'}</span>`;
+        }
+
+        function getAgeBadge(age) {
+            if (age === '24-55') return '<span class="badge-age target">24–55</span>';
+            return `<span class="badge-age other">${age || '—'}</span>`;
+        }
+
+        function getTypeBadge(lead) {
+            if (isTargetLead(lead)) {
+                return '<span class="badge-type lead">Лид</span>';
+            }
+            return '<span class="badge-type nonliquid">Неликвид</span>';
+        }
+
+        function getStatusOptions(selected) {
+            const options = ['Новый', 'В работе', 'Не в работе', 'Связь', 'Депозит в работе', 'Подозрительно'];
+            return options.map(s =>
+                `<option value="${s}" ${selected === s ? 'selected' : ''}>${s}</option>`
+            ).join('');
+        }
+
+        function getCommentButton(lead) {
+            const hasComment = lead.comment && lead.comment.trim().length > 0;
+            const cls = hasComment ? 'btn-small comment has-comment' : 'btn-small comment';
+            const icon = hasComment ? '💬' : '✏️';
+            return `<button class="${cls}" onclick="openCommentModal(${lead.id})">${icon}</button>`;
+        }
+
+        function getSuspiciousBadge(isSuspicious) {
+            if (isSuspicious) {
+                return '<span class="suspicious-badge yes">⚠️ Да</span>';
+            }
+            return '<span class="suspicious-badge no">✅ Нет</span>';
+        }
+
+        function getIpDisplay(ip) {
+            if (!ip) return '—';
+            return `<span class="ip-cell">${ip}</span>`;
+        }
+
+        // ========================================
+        // RENDER ALL TABS
+        // ========================================
+        function renderAllTabs() {
+            renderLeadsTab();
+            renderNonliquidTab();
+            renderAllTab();
+            renderManagersTab();
+            renderFraudTab();
+        }
+
+        // ========================================
+        // LEADS TAB
+        // ========================================
+        function renderLeadsTab() {
+            const search = document.getElementById('leadsSearch').value.toLowerCase().trim();
+            let leads = allLeads.filter(isTargetLead);
+
+            if (search) {
+                leads = leads.filter(l => (l.contact || '').toLowerCase().includes(search));
+            }
+
+            const tbody = document.getElementById('leadsBody');
+
+            document.getElementById('leadsTotal').textContent = leads.length;
+            document.getElementById('leadsNew').textContent = leads.filter(l => l.status === 'Новый').length;
+            document.getElementById('leadsWork').textContent = leads.filter(l => l.status === 'В работе').length;
+            document.getElementById('leadsNotwork').textContent = leads.filter(l => l.status === 'Не в работе').length;
+            document.getElementById('leadsContact').textContent = leads.filter(l => l.status === 'Связь').length;
+            document.getElementById('leadsDeposit').textContent = leads.filter(l => l.status === 'Депозит в работе').length;
+            document.getElementById('leadsPdp').textContent = leads.filter(l => l.pdp === true).length;
+            document.getElementById('leadsSuspicious').textContent = leads.filter(l => l.is_suspicious === true || l.status === 'Подозрительно').length;
+
+            if (leads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" class="empty">📭 Нет лидов</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = leads.map(lead => `
+                <tr>
+                    <td>${formatDate(lead.created_at)}</td>
+                    <td>${getManagerName(lead.manager_id)}</td>
+                    <td>${getCountryBadge(lead.country)}</td>
+                    <td>${getAgeBadge(lead.age_group)}</td>
+                    <td>${lead.messenger_type || '—'}</td>
+                    <td><strong style="color:#d4a84b;">${lead.contact || '—'}</strong></td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(${lead.id}, this.value)">
+                            ${getStatusOptions(lead.status || 'Новый')}
+                        </select>
+                    </td>
+                    <td>
+                        <button class="pdp-toggle ${lead.pdp ? 'active' : ''}" onclick="togglePdp(${lead.id})">
+                            <span class="indicator"></span>
+                            ${lead.pdp ? '✅ Да' : '❌ Нет'}
+                        </button>
+                    </td>
+                    <td>${getIpDisplay(lead.ip_address)}</td>
+                    <td>${getSuspiciousBadge(lead.is_suspicious || lead.status === 'Подозрительно')}</td>
+                    <td>${getCommentButton(lead)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ========================================
+        // NONLIQUID TAB
+        // ========================================
+        function renderNonliquidTab() {
+            const search = document.getElementById('nonliquidSearch').value.toLowerCase().trim();
+            let nonliquid = allLeads.filter(l => !isTargetLead(l));
+
+            if (search) {
+                nonliquid = nonliquid.filter(l => (l.contact || '').toLowerCase().includes(search));
+            }
+
+            const tbody = document.getElementById('nonliquidBody');
+
+            document.getElementById('nonliquidTotal').textContent = nonliquid.length;
+            document.getElementById('nonliquidCountry').textContent = nonliquid.filter(l => l.country !== 'Россия').length;
+            document.getElementById('nonliquidAge').textContent = nonliquid.filter(l => l.country === 'Россия' && l
+                .age_group !== '24-55').length;
+
+            if (nonliquid.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" class="empty">📦 Неликвидов нет</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = nonliquid.map(lead => `
+                <tr>
+                    <td>${formatDate(lead.created_at)}</td>
+                    <td>${getManagerName(lead.manager_id)}</td>
+                    <td>${getCountryBadge(lead.country)}</td>
+                    <td>${getAgeBadge(lead.age_group)}</td>
+                    <td>${lead.messenger_type || '—'}</td>
+                    <td><span style="color:rgba(255,255,255,0.5);">${lead.contact || '—'}</span></td>
+                    <td><span style="color:rgba(255,255,255,0.2);font-size:11px;">${getNonliquidReason(lead)}</span></td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(${lead.id}, this.value)">
+                            ${getStatusOptions(lead.status || 'Новый')}
+                        </select>
+                    </td>
+                    <td>
+                        <button class="pdp-toggle ${lead.pdp ? 'active' : ''}" onclick="togglePdp(${lead.id})">
+                            <span class="indicator"></span>
+                            ${lead.pdp ? '✅ Да' : '❌ Нет'}
+                        </button>
+                    </td>
+                    <td>${getIpDisplay(lead.ip_address)}</td>
+                    <td>${getSuspiciousBadge(lead.is_suspicious || lead.status === 'Подозрительно')}</td>
+                    <td>${getCommentButton(lead)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ========================================
+        // ALL TAB
+        // ========================================
+        function renderAllTab() {
+            const search = document.getElementById('allSearch').value.toLowerCase().trim();
+            let leads = allLeads;
+
+            if (search) {
+                leads = leads.filter(l => (l.contact || '').toLowerCase().includes(search));
+            }
+
+            const tbody = document.getElementById('allBody');
+
+            document.getElementById('allTotal').textContent = leads.length;
+            document.getElementById('allLeads').textContent = leads.filter(isTargetLead).length;
+            document.getElementById('allNonliquid').textContent = leads.filter(l => !isTargetLead(l)).length;
+            document.getElementById('allPdp').textContent = leads.filter(l => l.pdp === true).length;
+            document.getElementById('allSuspicious').textContent = leads.filter(l => l.is_suspicious === true || l.status === 'Подозрительно').length;
+
+            if (leads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" class="empty">📭 Нет заявок</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = leads.map(lead => `
+                <tr>
+                    <td>${formatDate(lead.created_at)}</td>
+                    <td>${getManagerName(lead.manager_id)}</td>
+                    <td>${getCountryBadge(lead.country)}</td>
+                    <td>${getAgeBadge(lead.age_group)}</td>
+                    <td>${getTypeBadge(lead)}</td>
+                    <td>${lead.messenger_type || '—'}</td>
+                    <td>${lead.contact || '—'}</td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(${lead.id}, this.value)">
+                            ${getStatusOptions(lead.status || 'Новый')}
+                        </select>
+                    </td>
+                    <td>
+                        <button class="pdp-toggle ${lead.pdp ? 'active' : ''}" onclick="togglePdp(${lead.id})">
+                            <span class="indicator"></span>
+                            ${lead.pdp ? '✅ Да' : '❌ Нет'}
+                        </button>
+                    </td>
+                    <td>${getIpDisplay(lead.ip_address)}</td>
+                    <td>${getSuspiciousBadge(lead.is_suspicious || lead.status === 'Подозрительно')}</td>
+                    <td>${getCommentButton(lead)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ========================================
+        // MANAGERS TAB
+        // ========================================
+        function renderManagersTab() {
+            const tbody = document.getElementById('managersBody');
+
+            if (allManagers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty">👥 Нет менеджеров</td></tr>`;
+                return;
+            }
+
+            const stats = {};
+            allManagers.forEach(m => {
+                stats[m.id] = { leads: 0, nonliquid: 0, pdp: 0, total: 0 };
+            });
+
+            allLeads.forEach(l => {
+                if (l.manager_id && stats[l.manager_id]) {
+                    if (l.pdp === true) {
+                        stats[l.manager_id].pdp++;
+                    } else if (isTargetLead(l)) {
+                        stats[l.manager_id].leads++;
+                    } else {
+                        stats[l.manager_id].nonliquid++;
+                    }
+                    stats[l.manager_id].total++;
+                }
+            });
+
+            tbody.innerHTML = allManagers.map(m => {
+                const s = stats[m.id] || { leads: 0, nonliquid: 0, pdp: 0, total: 0 };
+                return `
+                <tr>
+                    <td><code style="color:#d4a84b;">${m.id}</code></td>
+                    <td>${m.full_name}</td>
+                    <td style="color:#4caf50;font-weight:600;">${s.leads}</td>
+                    <td style="color:rgba(255,255,255,0.3);">${s.nonliquid}</td>
+                    <td style="color:#4caf50;font-weight:600;">${s.pdp}</td>
+                    <td style="color:#d4a84b;font-weight:600;">${s.total}</td>
+                    <td>
+                        <div class="manager-actions">
+                            <button class="btn-small" onclick="showManagerLeads('${m.id}')">📋 Показать</button>
+                            <button class="btn-small danger" onclick="deleteManager('${m.id}')">🗑️ Удалить</button>
+                            <button class="btn-small danger" onclick="resetManager('${m.id}')">🔄 Сбросить</button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // ========================================
+        // FRAUD TAB
+        // ========================================
+        function renderFraudTab() {
+            const tbody = document.getElementById('fraudBody');
+
+            // Группируем по IP
+            const ipGroups = {};
+            allLeads.forEach(l => {
+                if (l.ip_address) {
+                    if (!ipGroups[l.ip_address]) ipGroups[l.ip_address] = [];
+                    ipGroups[l.ip_address].push(l);
+                }
+            });
+
+            const uniqueIPs = Object.keys(ipGroups).length;
+            const suspiciousIPs = Object.entries(ipGroups).filter(([ip, leads]) => leads.length > 1);
+            const totalSuspicious = allLeads.filter(l => l.is_suspicious === true || l.status === 'Подозрительно').length;
+
+            document.getElementById('fraudUniqueIP').textContent = uniqueIPs;
+            document.getElementById('fraudSuspiciousIP').textContent = suspiciousIPs.length;
+            document.getElementById('fraudTotalSuspicious').textContent = totalSuspicious;
+
+            if (suspiciousIPs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty">✅ Подозрительных IP не обнаружено</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = suspiciousIPs.map(([ip, leads]) => {
+                const managers = [...new Set(leads.map(l => l.manager_id).filter(Boolean))];
+                const statuses = [...new Set(leads.map(l => l.status))];
+                const lastLead = new Date(leads[0].created_at).toLocaleString('ru-RU');
+                return `
+                <tr>
+                    <td><span class="ip-cell" style="color:#d4a84b;font-weight:600;">${ip}</span></td>
+                    <td><strong style="color:#ff9800;">${leads.length}</strong></td>
+                    <td>${managers.map(m => getManagerName(m)).join(', ') || '—'}</td>
+                    <td>${statuses.join(', ')}</td>
+                    <td>${lastLead}</td>
+                    <td>
+                        <button class="btn-small danger" onclick="markIPAsFraud('${ip}')">
+                            🚫 Пометить все как Фрод
+                        </button>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // ========================================
+        // MARK IP AS FRAUD
+        // ========================================
+        async function markIPAsFraud(ip) {
+            if (!confirm(`⚠️ Пометить ВСЕ заявки с IP ${ip} как ФРОД?\n\nЭто действие можно отменить, изменив статус вручную.`)) {
+                return;
+            }
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/leads?ip_address=eq.${ip}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ status: 'Фрод' })
+                });
+                await loadAllData();
+            } catch (error) {
+                alert('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // ========================================
+        // MODAL: SHOW MANAGER LEADS
+        // ========================================
+        function showManagerLeads(managerId) {
+            const manager = getManagerById(managerId);
+            const name = manager ? manager.full_name : managerId;
+
+            const leads = allLeads.filter(l => l.manager_id === managerId);
+            const targetLeads = leads.filter(isTargetLead);
+            const nonliquidLeads = leads.filter(l => !isTargetLead(l) && l.pdp !== true);
+            const pdpLeads = leads.filter(l => l.pdp === true);
+
+            document.getElementById('modalManagerName').textContent = name;
+            document.getElementById('modalLeadsCount').textContent = targetLeads.length;
+            document.getElementById('modalNonliquidCount').textContent = nonliquidLeads.length;
+            document.getElementById('modalPdpCount').textContent = pdpLeads.length;
+            document.getElementById('modalTotalCount').textContent = leads.length;
+
+            const tbody = document.getElementById('modalBody');
+
+            if (leads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="empty">📭 Нет заявок</td></tr>`;
+            } else {
+                tbody.innerHTML = leads.map(lead => `
+                    <tr>
+                        <td>${formatDate(lead.created_at)}</td>
+                        <td>${getCountryBadge(lead.country)}</td>
+                        <td>${getAgeBadge(lead.age_group)}</td>
+                        <td>${getTypeBadge(lead)}</td>
+                        <td>${lead.messenger_type || '—'}</td>
+                        <td>${lead.contact || '—'}</td>
+                        <td><span class="status-badge ${getStatusClass(lead.status)}">${lead.status || 'Новый'}</span></td>
+                        <td>${lead.pdp ? '✅ Да' : '❌ Нет'}</td>
+                    </tr>
+                `).join('');
+            }
+
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ========================================
+        // MODAL: COMMENT
+        // ========================================
+        function openCommentModal(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            currentCommentLeadId = leadId;
+            document.getElementById('commentLeadId').textContent = leadId;
+            document.getElementById('commentTextarea').value = lead.comment || '';
+            document.getElementById('commentModalOverlay').classList.add('active');
+        }
+
+        function closeCommentModal() {
+            document.getElementById('commentModalOverlay').classList.remove('active');
+            currentCommentLeadId = null;
+        }
+
+        async function saveCommentFromModal() {
+            if (!currentCommentLeadId) return;
+
+            const textarea = document.getElementById('commentTextarea');
+            const comment = textarea.value.trim();
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${currentCommentLeadId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ comment: comment || null })
+                });
+
+                closeCommentModal();
+                await loadAllData();
+            } catch (error) {
+                alert('❌ Ошибка сохранения комментария: ' + error.message);
+            }
+        }
+
+        document.getElementById('commentModalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeCommentModal();
+        });
+
+        // ========================================
+        // TOGGLE PDP
+        // ========================================
+        async function togglePdp(leadId) {
+            const lead = allLeads.find(l => l.id === leadId);
+            if (!lead) return;
+
+            const newPdp = !lead.pdp;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${leadId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ pdp: newPdp })
+                });
+                await loadAllData();
+            } catch (error) {
+                alert('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // ========================================
+        // UPDATE STATUS
+        // ========================================
+        async function updateStatus(leadId, newStatus) {
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/leads?id=eq.${leadId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                await loadAllData();
+            } catch (error) {
+                alert('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // ========================================
+        // DELETE MANAGER
+        // ========================================
+        async function deleteManager(managerId) {
+            const manager = getManagerById(managerId);
+            const name = manager ? manager.full_name : managerId;
+
+            const leadCount = allLeads.filter(l => l.manager_id === managerId).length;
+
+            if (!confirm(`⚠️ Вы уверены, что хотите УДАЛИТЬ менеджера "${name}"?\n\nУ него ${leadCount} заявок. Они НЕ будут удалены, но останутся без привязки к менеджеру.`)) {
+                return;
+            }
+
+            if (!confirm(`🔴 ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ!\n\nМенеджер "${name}" будет полностью удалён из системы.\n\nВы действительно хотите это сделать?`)) {
+                return;
+            }
+
+            try {
+                await fetch(
+                    `${SUPABASE_URL}/rest/v1/leads?manager_id=eq.${managerId}`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({ manager_id: null })
+                    }
+                );
+
+                await fetch(
+                    `${SUPABASE_URL}/rest/v1/managers?id=eq.${managerId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Prefer': 'return=minimal'
+                        }
+                    }
+                );
+
+                alert(`✅ Менеджер "${name}" удалён! Заявки сохранены без привязки.`);
+                await loadAllData();
+            } catch (error) {
+                console.error('❌ Ошибка удаления:', error);
+                alert('❌ Ошибка при удалении менеджера. Попробуйте позже.');
+            }
+        }
+
+        // ========================================
+        // RESET MANAGER
+        // ========================================
+        async function resetManager(managerId) {
+            const manager = getManagerById(managerId);
+            const name = manager ? manager.full_name : managerId;
+
+            if (!confirm(`⚠️ Вы уверены, что хотите ОБНУЛИТЬ ВСЕ ЗАЯВКИ менеджера "${name}"?\n\nЭто действие НЕОБРАТИМО!`)) {
+                return;
+            }
+
+            if (!confirm(`🔴 ПОСЛЕДНЕЕ ПРЕДУПРЕЖДЕНИЕ!\n\nВсе ${allLeads.filter(l => l.manager_id === managerId).length} заявок менеджера "${name}" будут УДАЛЕНЫ навсегда.\n\nВы действительно хотите это сделать?`)) {
+                return;
+            }
+
+            try {
+                await fetch(
+                    `${SUPABASE_URL}/rest/v1/leads?manager_id=eq.${managerId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_ANON_KEY,
+                            'Prefer': 'return=minimal'
+                        }
+                    }
+                );
+
+                alert(`✅ Все заявки менеджера "${name}" удалены!`);
+                await loadAllData();
+            } catch (error) {
+                console.error('❌ Ошибка сброса:', error);
+                alert('❌ Ошибка при удалении заявок. Попробуйте позже.');
+            }
+        }
+
+        // ========================================
+        // ADD MANAGER
+        // ========================================
+        async function addManager() {
+            const id = prompt('Введите ID менеджера (латиницей, например: novoselov):');
+            if (!id) return;
+            const fullName = prompt('Введите полное имя:');
+            if (!fullName) return;
+            const password = prompt('Введите пароль:');
+            if (!password) return;
+            const email = prompt('Введите email (опционально):') || null;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/managers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ id, full_name: fullName, password, email, is_active: true })
+                });
+                await loadAllData();
+                alert('✅ Менеджер добавлен! Ссылка: /?ref=' + id);
+            } catch (error) {
+                alert('❌ Ошибка: ' + error.message);
+            }
+        }
+
+        // ========================================
+        // SEARCH BUTTONS
+        // ========================================
+        document.getElementById('leadsSearchBtn').addEventListener('click', renderAllTabs);
+        document.getElementById('leadsSearch').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') renderAllTabs();
+        });
+
+        document.getElementById('nonliquidSearchBtn').addEventListener('click', renderAllTabs);
+        document.getElementById('nonliquidSearch').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') renderAllTabs();
+        });
+
+        document.getElementById('allSearchBtn').addEventListener('click', renderAllTabs);
+        document.getElementById('allSearch').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') renderAllTabs();
+        });
+
+        // ========================================
+        // REFRESH BUTTONS
+        // ========================================
+        document.getElementById('refreshLeads').addEventListener('click', loadAllData);
+        document.getElementById('refreshNonliquid').addEventListener('click', loadAllData);
+        document.getElementById('refreshAll').addEventListener('click', loadAllData);
+
+        // ========================================
+        // TABS
+        // ========================================
+        document.querySelectorAll('.tabs button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        console.log('⚙️ Bear Admin загружен');
+        console.log('🔄 Авто-обновление ОТКЛЮЧЕНО. Обновляйте вручную кнопкой.');
+        console.log('🛡️ Антифрод: IP, скорость заполнения, движения мыши, скролл, фокус на полях');
+    </script>
+
+</body>
+</html>
