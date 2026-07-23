@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bear Capital — Дашборд</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header h1 span {
+            color: #d4a84b;
+        }
+
+        .header .user-info {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 10px 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .user-info .manager-id {
+            color: #d4a84b;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 26px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .stat-card .value.gold { color: #d4a84b; }
+        .stat-card .value.green { color: #4caf50; }
+        .stat-card .value.orange { color: #ff9800; }
+        .stat-card .value.red { color: #f44336; }
+        .stat-card .value.blue { color: #42a5f5; }
+        .stat-card .value.purple { color: #ce93d8; }
+        .stat-card .value.gray { color: rgba(255,255,255,0.3); }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #d4a84b;
+        }
+
+        .filters input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .filters select option {
+            background: #111111;
+            color: #fff;
+        }
+
+        .btn-refresh {
+            padding: 10px 20px;
+            background: rgba(212, 168, 75, 0.15);
+            border: 1px solid rgba(212, 168, 75, 0.2);
+            border-radius: 10px;
+            color: #d4a84b;
+            cursor: pointer;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .btn-refresh:hover {
+            background: rgba(212, 168, 75, 0.25);
+        }
+
+        .table-container {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 700px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .status-badge.new { background: rgba(212, 168, 75, 0.15); color: #d4a84b; }
+        .status-badge.work { background: rgba(255, 152, 0, 0.15); color: #ff9800; }
+        .status-badge.notwork { background: rgba(244, 67, 54, 0.15); color: #f44336; }
+        .status-badge.contact { background: rgba(33, 150, 243, 0.15); color: #42a5f5; }
+        .status-badge.deposit { background: rgba(156, 39, 176, 0.15); color: #ce93d8; }
+
+        .badge-country {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-country.ru {
+            background: rgba(212, 168, 75, 0.15);
+            color: #d4a84b;
+        }
+
+        .badge-country.other {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .badge-age {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-age.target {
+            background: rgba(76, 175, 80, 0.12);
+            color: #4caf50;
+        }
+
+        .badge-age.other {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .pdp-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .pdp-badge.yes {
+            background: rgba(76, 175, 80, 0.15);
+            color: #4caf50;
+        }
+
+        .pdp-badge.no {
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.15);
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 8px 18px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .last-update {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.15);
+            margin-left: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0; }
+            .header { flex-direction: column; align-items: stretch; gap: 10px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            table { font-size: 12px; min-width: 600px; }
+            th, td { padding: 8px 10px; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .filters input, .filters select { width: 100%; }
+            .btn-refresh { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <div class="header">
+            <h1>📊 <span>Bear</span> Capital</h1>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div class="user-info">
+                    <span>👤</span>
+                    <span class="manager-id" id="managerName">Загрузка...</span>
+                </div>
+                <button class="logout-btn" id="logoutBtn">🚪 Выйти</button>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><div class="label">Всего заявок</div><div class="value gold" id="totalLeads">0</div></div>
+            <div class="stat-card"><div class="label">Новые</div><div class="value" style="color:#d4a84b;" id="newLeads">0</div></div>
+            <div class="stat-card"><div class="label">В работе</div><div class="value orange" id="workLeads">0</div></div>
+            <div class="stat-card"><div class="label">Не в работе</div><div class="value red" id="notworkLeads">0</div></div>
+            <div class="stat-card"><div class="label">Связь</div><div class="value blue" id="contactLeads">0</div></div>
+            <div class="stat-card"><div class="label">Депозит в работе</div><div class="value purple" id="depositLeads">0</div></div>
+            <div class="stat-card"><div class="label">ПДП ✅</div><div class="value green" id="pdpLeads">0</div></div>
+        </div>
+
+        <div class="filters">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск по контакту...">
+            <select id="statusFilter">
+                <option value="all">Все статусы</option>
+                <option value="Новый">Новый</option>
+                <option value="В работе">В работе</option>
+                <option value="Не в работе">Не в работе</option>
+                <option value="Связь">Связь</option>
+                <option value="Депозит в работе">Депозит в работе</option>
+            </select>
+            <select id="pdpFilter">
+                <option value="all">Все ПДП</option>
+                <option value="true">✅ ПДП</option>
+                <option value="false">❌ Не ПДП</option>
+            </select>
+            <input type="date" id="dateFrom">
+            <input type="date" id="dateTo">
+            <button class="btn-refresh" id="refreshBtn">🔄 Обновить</button>
+            <span class="last-update" id="lastUpdate">Обновлено: —</span>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Страна</th>
+                        <th>Возраст</th>
+                        <th>Контакт</th>
+                        <th>Мессенджер</th>
+                        <th>Статус</th>
+                        <th>ПДП</th>
+                    </tr>
+                </thead>
+                <tbody id="leadsTableBody">
+                    <tr><td colspan="7" class="loading">⏳ Загрузка заявок...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // SUPABASE CONFIG
+        // ========================================
+        const SUPABASE_URL = 'https://pvdsbslqpvnvqckefvuf.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_sSNY7UgCqVBwpGipA_vcsw_s6uRk7yZ';
+
+        // ========================================
+        // AUTH — ЗАПОМИНАЕМ ЛОГИН И ПАРОЛЬ
+        // ========================================
+        function getManagerAuth() {
+            const saved = localStorage.getItem('managerAuth');
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) { return null; }
+            }
+            return null;
+        }
+
+        function setManagerAuth(managerId, fullName) {
+            localStorage.setItem('managerAuth', JSON.stringify({ id: managerId, fullName }));
+        }
+
+        function clearManagerAuth() {
+            localStorage.removeItem('managerAuth');
+        }
+
+        // Проверяем авторизацию
+        let auth = getManagerAuth();
+
+        if (!auth) {
+            const managerId = prompt('Введите ваш ID менеджера (например: ivanov):');
+            if (!managerId) { window.location.href = '/'; throw new Error('Авторизация отменена'); }
+            const password = prompt('Введите пароль:');
+            if (!password) { window.location.href = '/'; throw new Error('Авторизация отменена'); }
+
+            (async function() {
+                try {
+                    const response = await fetch(
+                        `${SUPABASE_URL}/rest/v1/managers?id=eq.${managerId}&select=id,full_name,password`, {
+                            headers: { 'apikey': SUPABASE_ANON_KEY }
+                        }
+                    );
+                    const data = await response.json();
+                    if (data.length === 0) {
+                        alert('❌ Менеджер не найден!');
+                        window.location.href = '/';
+                        return;
+                    }
+                    const manager = data[0];
+                    if (manager.password !== password) {
+                        alert('❌ Неверный пароль!');
+                        window.location.href = '/';
+                        return;
+                    }
+                    setManagerAuth(manager.id, manager.full_name);
+                    location.reload();
+                } catch (error) {
+                    alert('❌ Ошибка авторизации: ' + error.message);
+                    window.location.href = '/';
+                }
+            })();
+            throw new Error('Ожидание авторизации...');
+        }
+
+        // Если авторизация уже есть — обновляем данные
+        const managerId = auth.id;
+        document.getElementById('managerName').textContent = auth.fullName || managerId;
+
+        let allLeads = [];
+
+        // ========================================
+        // LOAD LEADS (только просмотр, без изменения)
+        // ========================================
+        async function loadLeads() {
+            try {
+                const response = await fetch(
+                    `${SUPABASE_URL}/rest/v1/leads?manager_id=eq.${managerId}&order=created_at.desc`, {
+                        headers: { 'apikey': SUPABASE_ANON_KEY }
+                    }
+                );
+                allLeads = await response.json();
+                renderLeads(allLeads);
+                updateStats(allLeads);
+                document.getElementById('lastUpdate').textContent = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU');
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                document.getElementById('leadsTableBody').innerHTML =
+                    `<tr><td colspan="7" style="text-align:center;color:#f44336;padding:30px;">❌ Ошибка загрузки данных</td></tr>`;
+            }
+        }
+
+        // ========================================
+        // RENDER — ТОЛЬКО ПРОСМОТР
+        // ========================================
+        function getStatusClass(status) {
+            const map = {
+                'Новый': 'new',
+                'В работе': 'work',
+                'Не в работе': 'notwork',
+                'Связь': 'contact',
+                'Депозит в работе': 'deposit'
+            };
+            return map[status] || 'new';
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getCountryBadge(country) {
+            if (country === 'Россия') return '<span class="badge-country ru">Россия</span>';
+            return `<span class="badge-country other">${country || '—'}</span>`;
+        }
+
+        function getAgeBadge(age) {
+            if (age === '24-55') return '<span class="badge-age target">24–55</span>';
+            return `<span class="badge-age other">${age || '—'}</span>`;
+        }
+
+        function getPdpBadge(pdp) {
+            if (pdp) {
+                return '<span class="pdp-badge yes">✅ Да</span>';
+            }
+            return '<span class="pdp-badge no">❌ Нет</span>';
+        }
+
+        function renderLeads(leads) {
+            const tbody = document.getElementById('leadsTableBody');
+            if (leads.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="empty">📭 Нет заявок</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = leads.map(lead => `
+                <tr>
+                    <td>${formatDate(lead.created_at)}</td>
+                    <td>${getCountryBadge(lead.country)}</td>
+                    <td>${getAgeBadge(lead.age_group)}</td>
+                    <td><strong style="color:#d4a84b;">${lead.contact || '—'}</strong></td>
+                    <td>${lead.messenger_type || '—'}</td>
+                    <td><span class="status-badge ${getStatusClass(lead.status || 'Новый')}">${lead.status || 'Новый'}</span></td>
+                    <td>${getPdpBadge(lead.pdp)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ========================================
+        // STATS
+        // ========================================
+        function updateStats(leads) {
+            const total = leads.length;
+            const newLeads = leads.filter(l => l.status === 'Новый').length;
+            const workLeads = leads.filter(l => l.status === 'В работе').length;
+            const notworkLeads = leads.filter(l => l.status === 'Не в работе').length;
+            const contactLeads = leads.filter(l => l.status === 'Связь').length;
+            const depositLeads = leads.filter(l => l.status === 'Депозит в работе').length;
+            const pdpLeads = leads.filter(l => l.pdp === true).length;
+
+            document.getElementById('totalLeads').textContent = total;
+            document.getElementById('newLeads').textContent = newLeads;
+            document.getElementById('workLeads').textContent = workLeads;
+            document.getElementById('notworkLeads').textContent = notworkLeads;
+            document.getElementById('contactLeads').textContent = contactLeads;
+            document.getElementById('depositLeads').textContent = depositLeads;
+            document.getElementById('pdpLeads').textContent = pdpLeads;
+        }
+
+        // ========================================
+        // FILTERS
+        // ========================================
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('pdpFilter').addEventListener('change', applyFilters);
+        document.getElementById('dateFrom').addEventListener('change', applyFilters);
+        document.getElementById('dateTo').addEventListener('change', applyFilters);
+
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('statusFilter').value;
+            const pdpFilter = document.getElementById('pdpFilter').value;
+            const dateFrom = document.getElementById('dateFrom').value;
+            const dateTo = document.getElementById('dateTo').value;
+
+            let filtered = allLeads.filter(lead => {
+                if (search && !(lead.contact || '').toLowerCase().includes(search)) return false;
+                if (status !== 'all' && lead.status !== status) return false;
+                if (pdpFilter !== 'all') {
+                    const pdpBool = pdpFilter === 'true';
+                    if (lead.pdp !== pdpBool) return false;
+                }
+                const leadDate = new Date(lead.created_at).toISOString().split('T')[0];
+                if (dateFrom && leadDate < dateFrom) return false;
+                if (dateTo && leadDate > dateTo) return false;
+                return true;
+            });
+
+            renderLeads(filtered);
+            updateStats(filtered);
+        }
+
+        // ========================================
+        // REFRESH & LOGOUT
+        // ========================================
+        document.getElementById('refreshBtn').addEventListener('click', loadLeads);
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                clearManagerAuth();
+                window.location.href = '/';
+            }
+        });
+
+        // ========================================
+        // INIT
+        // ========================================
+        loadLeads();
+
+        console.log('📊 Дашборд загружен для менеджера:', managerId);
+        console.log('🔄 Авто-обновление ОТКЛЮЧЕНО. Обновляйте вручную кнопкой.');
+    </script>
+
+</body>
+</html>
